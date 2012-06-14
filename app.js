@@ -4,9 +4,20 @@ app.mongoose = require('mongoose');
 
 var config = require('./config.js')(app, express);
 
-var models = {};
-models.examples = require('./models/example')(app.mongoose);
+var models = {
+	Book: require('./models/book')(app.mongoose)
+};
 
-require('./routes')(app, models);
+console.log("App startup");
+
+var controllers = {
+	home : require('./controllers/homeController')(models),
+	book : require('./controllers/bookController')(models)
+};
+
+// Populate some sample data
+require('./sampleData')(models);
+
+require('./routes')(app, controllers);
 
 app.listen(process.env.PORT || 3000);
